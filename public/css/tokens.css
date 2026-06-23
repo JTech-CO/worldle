@@ -1,0 +1,45 @@
+/* Design tokens. One neutral family (slate), one accent (calm teal-green for
+   "land"), one functional status hue used only for the proximity meter. No
+   decorative color. Spacing on a 4px scale. */
+:root {
+  /* Surfaces — bg is black space; elevated surfaces stay slate so cards read. */
+  --bg:          #000000;
+  --surface:     #12161d;
+  --surface-2:   #181d26;
+  --border:      #28303c;
+  --border-soft: #1e2530;
+
+  /* Text */
+  --text:        #e8ebf0;
+  --text-muted:  #98a2b3;
+  --text-faint:  #8b94a3;
+
+  /* Accent (single brand color) */
+  --accent:        #43b08a;
+  --accent-strong: #54c79c;
+  --accent-weak:   rgba(67, 176, 138, 0.14);
+
+  /* Proximity meter: one hue, brightness/chroma steps from far -> near. */
+  --far:  #5d6470;  /* cold/distant */
+  --mid:  #b89150;  /* getting warmer */
+  --near: var(--accent);
+
+  --danger: #d2685f; /* loss state only */
+
+  /* Typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+               "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Consolas, monospace;
+
+  /* Spacing scale (4px) */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+
+  /* Radii — squared off, only a hint of rounding on corners */
+  --r-sm: 2px; --r-md: 4px; --r-lg: 6px;
+
+  /* Elevation — restrained; cards rely on border + surface, not big shadows. */
+  --shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.45);
+
+  --maxw: 460px;
+}

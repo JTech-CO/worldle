@@ -1,0 +1,13 @@
+{
+  "name": "worldle",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "매일 바뀌는 나라를 거리·방향·근접도 힌트로 맞히는 지리 퍼즐.",
+  "scripts": {
+    "dev": "node --watch scripts/dev-server.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

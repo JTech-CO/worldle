@@ -1,0 +1,12 @@
+# Dependencies (none required, but just in case)
+node_modules/
+
+# Vercel
+.vercel/
+
+# Logs / OS / editor cruft
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

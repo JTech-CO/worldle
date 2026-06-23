@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="worldle">
+  <circle cx="16" cy="16" r="14" fill="#0b0e13" stroke="#43b08a" stroke-width="2"/>
+  <!-- meridian + equator: quiet globe glyph, no real geography -->
+  <ellipse cx="16" cy="16" rx="6" ry="14" fill="none" stroke="#43b08a" stroke-width="1.4" opacity="0.7"/>
+  <line x1="2" y1="16" x2="30" y2="16" stroke="#43b08a" stroke-width="1.4" opacity="0.7"/>
+</svg>
