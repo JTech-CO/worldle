@@ -23,12 +23,7 @@
   </script>
 </head>
 <body>
-  <!-- Black space backdrop (stars + globe are drawn in the canvas above). -->
   <div id="starfield" aria-hidden="true"></div>
-
-  <!-- Decorative low-poly globe + twinkling stars. The sphere is faceted and only
-       coarsely land/ocean, so it can't be used to read off the answer. Drag the
-       background to turn the view. Falls back to the black backdrop without WebGL. -->
   <canvas id="globe-canvas" aria-hidden="true"></canvas>
   <div class="globe-veil" aria-hidden="true"></div>
 
@@ -52,7 +47,7 @@
     </header>
 
     <main class="game">
-      <p id="puzzle-meta" class="puzzle-meta"><!-- Daily #N · YYYY-MM-DD --></p>
+      <p id="puzzle-meta" class="puzzle-meta"></p>
 
       <ol id="guess-board" class="board" aria-label="guesses"></ol>
 
@@ -95,7 +90,6 @@
     </footer>
   </div>
 
-  <!-- How-to-play dialog -->
   <dialog id="help-dialog" class="help-dialog" aria-labelledby="help-title">
     <form method="dialog" class="help-inner">
       <h2 id="help-title" data-i18n="howToTitle">플레이 방법</h2>

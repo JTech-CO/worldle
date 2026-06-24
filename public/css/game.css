@@ -6,7 +6,6 @@ body {
   line-height: 1.5;
 }
 
-/* Foreground sits above the globe (z 0) and veil (z 1). */
 .app {
   position: relative;
   z-index: 3;
@@ -16,13 +15,11 @@ body {
   align-items: center;
   padding: var(--s-4);
   gap: var(--s-5);
-  /* Let empty space around the UI fall through to the globe canvas so the
-     background can be grabbed and dragged; the actual UI blocks opt back in. */
+
   pointer-events: none;
 }
 .topbar, .game, .footnote, .help-dialog { pointer-events: auto; }
 
-/* ---------- Topbar ---------- */
 .topbar {
   width: 100%;
   max-width: var(--maxw);
@@ -48,7 +45,6 @@ body {
 .icon-btn:hover, .text-btn:hover { color: var(--text); border-color: var(--border); }
 .text-btn { font-weight: 600; min-width: 44px; }
 
-/* ---------- Game column ---------- */
 .game {
   width: 100%;
   max-width: var(--maxw);
@@ -64,7 +60,6 @@ body {
   text-align: center;
 }
 
-/* ---------- Board ---------- */
 .board { display: flex; flex-direction: column; gap: var(--s-2); }
 .guess-row {
   position: relative;
@@ -96,7 +91,6 @@ body {
 .g-prox { text-align: right; font-weight: 600; color: var(--text); }
 .g-arrow { font-size: 20px; line-height: 1; width: 1.2em; text-align: center; }
 
-/* Proximity meter along the bottom edge — single hue, far -> near. */
 .g-meter {
   position: absolute;
   left: 0; bottom: 0;
@@ -114,7 +108,6 @@ body {
 }
 .guess-row.is-correct .g-arrow, .guess-row.is-correct .g-prox { color: var(--accent-strong); }
 
-/* ---------- Input + autocomplete ---------- */
 .guess-form { display: flex; gap: var(--s-2); }
 .combo { position: relative; flex: 1; }
 .guess-input {
@@ -162,12 +155,10 @@ body {
 .submit-btn:hover { background: var(--accent-strong); }
 .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-/* ---------- Message ---------- */
 .message { min-height: 1.4em; text-align: center; font-size: 14px; color: var(--text-muted); }
 .message.is-error { color: var(--danger); }
 .message.is-win { color: var(--accent-strong); font-weight: 600; }
 
-/* ---------- Endgame ---------- */
 .endgame {
   display: flex;
   flex-direction: column;
@@ -183,7 +174,6 @@ body {
 .next-label { color: var(--text-faint); font-size: 13px; }
 .countdown { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 18px; color: var(--text); }
 
-/* ---------- Footer ---------- */
 .footnote {
   width: 100%;
   max-width: var(--maxw);
@@ -200,7 +190,6 @@ body {
   letter-spacing: 0.01em;
 }
 
-/* ---------- Help dialog ---------- */
 .help-dialog {
   margin: auto;
   width: min(92vw, 420px);
