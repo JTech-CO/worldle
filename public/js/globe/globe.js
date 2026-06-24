@@ -1,11 +1,5 @@
-// Decorative space scene behind the game: a low-poly Earth, a twinkling star
-// field, real summer constellations (a reality easter egg), a low-poly moon, and
-// a tiny satellite that orbits the moon and warps to another site when clicked.
-//
-// The globe is faceted and only coarsely land/ocean (sampled from a low-res real
-// mask), so it can't reveal the answer. Drag the background to turn the whole sky;
-// double-click to snap it back. Everything that can fail (WebGL, CDN, mask image)
-// is caught by the caller or falls back gracefully.
+// Decorative space scene behind the game. The globe is faceted and only coarsely
+// land/ocean, so it can't reveal the answer (stays a non-hint).
 import * as THREE from 'three';
 import { isLand as boxIsLand } from './landmask.js';
 import { CONSTELLATIONS, raDecToVec3 } from './constellations.js';
@@ -15,8 +9,8 @@ const AUTO_SPIN = 0.04;
 const DRAG_SENS = 0.005;
 const MASK_URL = '/assets/earth-water.png';
 const SKY_R = 55;
-const SAT_PERIOD = 10; // seconds for one orbit of the moon
-const SAT_SCALE = 0.5; // satellite render scale
+const SAT_PERIOD = 10; // seconds per orbit
+const SAT_SCALE = 0.5;
 
 const OCEAN = new THREE.Color(0x15394f);
 const LAND = new THREE.Color(0x2f6b46);
@@ -58,7 +52,7 @@ export function initGlobe(canvas, opts = {}) {
 
   const starTex = softStarTexture();
 
-  // ---------- Field stars (twinkling, slight glow via additive blending) ----------
+  // ---------- Field stars ----------
   const STAR_COUNT = 840;
   const starPos = new Float32Array(STAR_COUNT * 3);
   const starCol = new Float32Array(STAR_COUNT * 3);
@@ -76,7 +70,7 @@ export function initGlobe(canvas, opts = {}) {
     starPos[i * 3 + 2] = r * Math.sin(theta) * dist;
     const p = STAR_PALETTE[Math.floor(Math.random() * STAR_PALETTE.length)];
     starBase[i * 3] = p[0]; starBase[i * 3 + 1] = p[1]; starBase[i * 3 + 2] = p[2];
-    starLevel[i] = (0.5 + Math.random() * 0.5) * 1.5; // +50% brightness
+    starLevel[i] = (0.5 + Math.random() * 0.5) * 1.5;
     starPhase[i] = Math.random() * Math.PI * 2;
     starSpeed[i] = 0.6 + Math.random() * 2.2;
   }
@@ -123,7 +117,7 @@ export function initGlobe(canvas, opts = {}) {
   view.add(constelLines);
 
   // ---------- Low-poly moon ----------
-  const moonGeo = new THREE.IcosahedronGeometry(0.306, 1).toNonIndexed(); // 85% of prior size
+  const moonGeo = new THREE.IcosahedronGeometry(0.306, 1).toNonIndexed();
   const mPos = moonGeo.attributes.position;
   const mColors = new Float32Array(mPos.count * 3);
   const moonBase = new THREE.Color(0x9aa0a8);
@@ -145,7 +139,7 @@ export function initGlobe(canvas, opts = {}) {
   // ---------- Satellite orbiting the moon ----------
   const satPivot = new THREE.Group();
   satPivot.position.copy(moon.position);
-  satPivot.rotation.x = 0.55; // tilt the orbit plane so it reads as an orbit
+  satPivot.rotation.x = 0.55; // tilt orbit plane so it reads as an orbit
   view.add(satPivot);
 
   const satellite = new THREE.Group();
@@ -161,11 +155,11 @@ export function initGlobe(canvas, opts = {}) {
   const panelL = new THREE.Mesh(panelGeo, panelMat); panelL.position.x = -0.14;
   const panelR = new THREE.Mesh(panelGeo, panelMat); panelR.position.x = 0.14;
   satellite.add(panelL, panelR);
-  satellite.position.set(0.62, 0, 0); // orbit radius from the moon
+  satellite.position.set(0.62, 0, 0); // orbit radius
   satPivot.add(satellite);
 
   // ---------- Globe surface (low-poly, per-face land/ocean) ----------
-  const radius = 1.53; // 90% of prior size
+  const radius = 1.53;
   const geometry = new THREE.IcosahedronGeometry(radius, 4).toNonIndexed();
   const pos = geometry.attributes.position;
   const faceColors = new Float32Array(pos.count * 3);
@@ -249,7 +243,7 @@ export function initGlobe(canvas, opts = {}) {
   scene.add(key);
   scene.add(new THREE.AmbientLight(0x2a3a46, 1.05));
 
-  // ---------- Cursor tracking (for satellite hover) ----------
+  // ---------- Cursor tracking ----------
   let mouseX = -1e5;
   let mouseY = -1e5;
   window.addEventListener('pointermove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
@@ -267,7 +261,7 @@ export function initGlobe(canvas, opts = {}) {
 
   canvas.style.cursor = 'grab';
   canvas.addEventListener('pointerdown', (e) => {
-    if (satScreen.near && !warping) { // clicking the satellite, not dragging
+    if (satScreen.near && !warping) { // clicking the satellite, not dragging the sky
       satArmed = true; satDownX = e.clientX; satDownY = e.clientY;
       return;
     }
@@ -352,14 +346,14 @@ export function initGlobe(canvas, opts = {}) {
     }
     if (!reduceMotion) {
       moon.rotation.y += 0.02 * dt;
-      satPivot.rotation.y += (Math.PI * 2 / SAT_PERIOD) * dt; // one lap / 10s
+      satPivot.rotation.y += (Math.PI * 2 / SAT_PERIOD) * dt;
       satellite.rotation.y += 0.6 * dt;
     }
 
     twinkle(starGeo, starCol, starBase, starLevel, starPhase, starSpeed, STAR_COUNT);
     twinkle(cGeo, cCol, cBaseArr, cLevel, cPhaseArr, cSpeedArr, cCount);
 
-    // Satellite hover: project to screen, glow + "click me" pulse when near.
+    // Satellite hover: project to screen, glow + pulse when cursor is near.
     satellite.getWorldPosition(satWorld);
     const ndc = satWorld.clone().project(camera);
     const W = canvas.clientWidth || window.innerWidth;

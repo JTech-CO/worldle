@@ -1,5 +1,4 @@
-// Tiny helpers shared by the serverless functions. Kept framework-free so the
-// same handlers run unchanged under Vercel and under scripts/dev-server.mjs.
+// Framework-free HTTP helpers so the same handlers run under Vercel and scripts/dev-server.mjs.
 
 /** Send a JSON response with status and optional headers. */
 export function sendJson(res, status, body, headers = {}) {

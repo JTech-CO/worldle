@@ -1,4 +1,3 @@
-// App bootstrap: load data, wire the UI, run the daily game loop.
 import { fetchPuzzle, fetchCountries, postGuess } from './api.js';
 import { createGameStore } from './state.js';
 import { renderBoard } from './ui/board.js';
@@ -93,8 +92,7 @@ async function submitGuess(country) {
       dom.submit.disabled = false;
       combo.focus();
     } else {
-      // renderEndgame just disabled the focused input; move focus to the result
-      // region so keyboard/SR users aren't dropped to <body>.
+      // input was just disabled; move focus to the result region for keyboard/SR users
       dom.endgame.focus();
     }
   } catch (err) {
@@ -111,7 +109,7 @@ async function submitGuess(country) {
 function onSubmit(e) {
   e.preventDefault();
   if (store.isOver) return;
-  if (combo.isComposing()) return; // a Hangul-commit Enter can still reach native submit
+  if (combo.isComposing()) return; // guard: Hangul-commit Enter can reach native submit
   const country = combo.resolveInput();
   if (!country) {
     setMessage(t('notFound'), 'error');
@@ -127,7 +125,7 @@ function refreshLanguage() {
   renderAll();
 }
 
-// ---------- Countdown to the next puzzle (KST midnight) ----------
+// Countdown to next puzzle at KST midnight.
 function msUntilNextKstMidnight() {
   const now = Date.now();
   const KST = 9 * 3600 * 1000;
@@ -160,8 +158,7 @@ function wireChrome() {
   dom.form.addEventListener('submit', onSubmit);
 }
 
-// Satellite "warp": a black circle grows from (x,y) to fill the screen (~1s),
-// one full-screen flash pulse, then navigate away.
+// Satellite "warp": expanding black circle, a flash pulse, then navigate away.
 function warpFromSatellite(x, y) {
   const W = window.innerWidth;
   const H = window.innerHeight;
@@ -174,7 +171,7 @@ function warpFromSatellite(x, y) {
   ov.style.clipPath = start;
   ov.style.webkitClipPath = start;
   document.body.appendChild(ov);
-  void ov.offsetWidth; // reflow so the transition runs
+  void ov.offsetWidth; // force reflow so the transition runs
   ov.style.clipPath = end;
   ov.style.webkitClipPath = end;
 
@@ -195,7 +192,7 @@ async function startGlobe() {
     const { initGlobe } = await import('./globe/globe.js');
     initGlobe(el('globe-canvas'), { onWarp: warpFromSatellite });
   } catch {
-    // WebGL or CDN unavailable — the CSS backdrop remains. Game is unaffected.
+    // WebGL/CDN unavailable: CSS backdrop remains, game unaffected. Globe is decorative, not a hint.
   }
 }
 

@@ -1,6 +1,4 @@
-// Game state with per-day persistence. The daily puzzle should survive a
-// reload, so progress is saved in localStorage under a day-scoped key. A new
-// day starts fresh; stale keys are pruned.
+// Game state persisted in localStorage under a day-scoped key so the daily puzzle survives reloads; new day starts fresh, stale keys pruned.
 
 const KEY_PREFIX = 'worldle:v1:';
 
@@ -14,7 +12,7 @@ function pruneOldDays(currentDay) {
         localStorage.removeItem(k);
       }
     }
-  } catch { /* storage may be unavailable; ignore */ }
+  } catch { /* storage may be unavailable */ }
 }
 
 function load(day) {
@@ -27,10 +25,7 @@ function load(day) {
   return null;
 }
 
-/**
- * Create the store for a puzzle. Restores saved progress for the same day,
- * otherwise starts a new game.
- */
+// Restores saved progress for the same day, else starts a new game.
 export function createGameStore(puzzle) {
   pruneOldDays(puzzle.day);
 
@@ -43,7 +38,7 @@ export function createGameStore(puzzle) {
     guesses: [],
     status: 'playing', // 'playing' | 'won' | 'lost'
   };
-  // Keep metadata in sync with the server in case it changed between sessions.
+  // resync metadata with server in case it changed between sessions
   state.maxGuesses = puzzle.maxGuesses;
   state.totalCountries = puzzle.totalCountries;
   state.date = puzzle.date;
@@ -64,7 +59,7 @@ export function createGameStore(puzzle) {
 
     hasGuessed(id) { return state.guesses.some((g) => g.guess.id === id); },
 
-    /** Append a scored guess and update status. Returns the guess count. */
+    // Append a scored guess, update status, return guess count.
     addGuess(result) {
       state.guesses.push(result);
       if (result.correct) state.status = 'won';

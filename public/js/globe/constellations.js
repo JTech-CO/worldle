@@ -1,11 +1,4 @@
-// Real summer-sky constellations (visible in June from the northern hemisphere),
-// embedded as a small easter egg. Star positions are real J2000 equatorial
-// coordinates [RA°, Dec°] from standard catalogues (the data Stellarium and
-// friends draw from); drag the sky to find them. They are placed at their true
-// celestial positions among the decorative field stars.
-//
-// Each constellation: { name, stars: [[ra, dec], ...], lines: [[i, j], ...] }.
-
+// Real summer-sky constellations, an easter egg at true J2000 [RA°, Dec°] positions.
 export const CONSTELLATIONS = [
   {
     name: 'Lyra',
@@ -75,7 +68,7 @@ export const CONSTELLATIONS = [
   },
 ];
 
-/** Convert equatorial RA/Dec (degrees) to a 3D point at radius R. */
+/** Equatorial RA/Dec (degrees) to a 3D point at radius R. */
 export function raDecToVec3(ra, dec, R) {
   const rr = (ra * Math.PI) / 180;
   const dd = (dec * Math.PI) / 180;

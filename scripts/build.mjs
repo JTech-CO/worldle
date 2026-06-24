@@ -1,10 +1,6 @@
 // Production build: copy public/ -> dist/ and obfuscate the client JS.
-//
-// Local development still serves the readable public/ directory (npm run dev).
-// Only the deployed site (Vercel serves dist/) ships obfuscated code, so view-
-// source / Ctrl+U shows mangled output. This deters casual copying — it does not
-// truly protect the code (the browser must still run it), and the public GitHub
-// repo keeps the readable source for maintenance.
+// Only the deployed site ships obfuscated code (deters casual copying, not real protection);
+// the repo keeps the readable source.
 import { rm, cp, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,10 +11,9 @@ const ROOT = path.resolve(__dirname, '..');
 const SRC = path.join(ROOT, 'public');
 const OUT = path.join(ROOT, 'dist');
 
-// Conservative options: enough to mangle names and hide strings, but no control-
-// flow flattening or self-defending (those risk breaking ES modules / Three.js
-// and hurt runtime perf). Static import specifiers are left intact, so the
-// importmap ('three') and relative imports keep working.
+// Conservative: mangle names and hide strings, but no control-flow flattening or
+// self-defending (those risk breaking ES modules / Three.js). Static import
+// specifiers stay intact so the importmap and relative imports keep working.
 const OBFUSCATOR_OPTIONS = {
   compact: true,
   target: 'browser',

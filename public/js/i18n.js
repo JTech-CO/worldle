@@ -1,11 +1,9 @@
-// Bilingual strings (KO default, EN secondary). Values are either plain strings
-// or functions for interpolation. Static markup is translated via data-i18n /
-// data-i18n-attr attributes; dynamic strings are read with t().
+// Bilingual strings (KO default). Values are strings or interpolating functions; static markup via data-i18n, dynamic via t().
 
 const STRINGS = {
   ko: {
-    langButton: 'EN',           // label shown on the toggle (the *other* language)
-    langButtonLabel: '영어로 전환', // accessible name (names the language it switches to)
+    langButton: 'EN',           // toggle shows the *other* language
+    langButtonLabel: '영어로 전환', // accessible name: language it switches to
     htmlLang: 'ko',
     help: '도움말',
     inputPlaceholder: '국가명 입력',
@@ -81,24 +79,21 @@ export function toggleLang() {
   return setLang(lang === 'ko' ? 'en' : 'ko');
 }
 
-/** Read a string (or call an interpolating function) for the current language. */
 export function t(key, ...args) {
   const v = STRINGS[lang][key];
   return typeof v === 'function' ? v(...args) : v ?? key;
 }
 
-/** Country display name in the current language. */
 export function countryName(country) {
   return lang === 'ko' ? country.ko : country.en;
 }
 
-/** Apply translations to all [data-i18n] / [data-i18n-attr] nodes under root. */
 export function applyStaticI18n(root = document) {
   root.querySelectorAll('[data-i18n]').forEach((el) => {
     el.textContent = t(el.dataset.i18n);
   });
   root.querySelectorAll('[data-i18n-attr]').forEach((el) => {
-    // Format: "attr:key" (e.g. "placeholder:inputPlaceholder", "aria-label:help")
+    // format: comma-separated "attr:key" pairs
     el.dataset.i18nAttr.split(',').forEach((pair) => {
       const [attr, key] = pair.split(':').map((s) => s.trim());
       if (attr && key) el.setAttribute(attr, t(key));

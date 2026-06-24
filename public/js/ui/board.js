@@ -1,8 +1,7 @@
-// Renders the guess board: one row per guess, padded with empty rows up to
-// maxGuesses so the layout height is stable from the start.
+// Renders the guess board, padded to maxGuesses so layout height is stable.
 import { countryName, t } from '../i18n.js';
 
-const NEAR = 80; // proximity % thresholds for the single-hue meter color
+const NEAR = 80; // proximity % thresholds
 const MID = 40;
 
 function proximityClass(pct) {
@@ -53,12 +52,6 @@ function emptyRow() {
   return li;
 }
 
-/**
- * Render the whole board.
- * @param {HTMLElement} boardEl
- * @param {{ guesses: object[], maxGuesses: number }} store
- * @param {number} [animateIndex] index of a row to animate in (the newest)
- */
 export function renderBoard(boardEl, store, animateIndex = -1) {
   boardEl.replaceChildren();
   for (let i = 0; i < store.maxGuesses; i++) {

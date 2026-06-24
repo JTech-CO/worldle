@@ -1,9 +1,4 @@
-// Zero-dependency local dev server.
-//
-// Serves /public statically and routes /api/* to the same handler files Vercel
-// uses in production, so you can play and test locally with just:
-//   node scripts/dev-server.mjs
-// No Vercel CLI required.
+// Zero-dependency local dev server; routes /api/* to the same handlers Vercel uses.
 
 import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
@@ -12,7 +7,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-// Defaults to the readable source; pass "dist" to serve the built (obfuscated) site.
+// Pass "dist" to serve the built (obfuscated) site.
 const SERVE_DIR = process.argv[2] || 'public';
 const PUBLIC_DIR = path.join(ROOT, SERVE_DIR);
 const API_DIR = path.join(ROOT, 'api');
@@ -70,15 +65,12 @@ async function serveApi(req, res, pathname) {
   }
 }
 
-// NOTE: this server intentionally does NOT emulate vercel.json's cleanUrls /
-// trailingSlash. It serves literal paths and only falls back to index.html for
-// extension-less misses. Keep every in-app URL canonical (no .html, no trailing
-// slash) so local behavior matches production.
+// Does not emulate vercel.json cleanUrls/trailingSlash; serves literal paths so
+// in-app URLs must stay canonical (no .html, no trailing slash) to match production.
 async function serveStatic(req, res, pathname) {
   const rel = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
   const filePath = path.join(PUBLIC_DIR, rel);
-  // Block path traversal outside PUBLIC_DIR. Compare with a trailing separator so a
-  // sibling dir that merely shares the prefix can't pass.
+  // Block path traversal outside PUBLIC_DIR; trailing separator stops prefix-sharing siblings.
   if (filePath !== PUBLIC_DIR && !filePath.startsWith(PUBLIC_DIR + path.sep)) {
     res.writeHead(403).end('Forbidden');
     return;
@@ -89,7 +81,7 @@ async function serveStatic(req, res, pathname) {
     res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
     res.end(data);
   } catch {
-    // SPA-style fallback to index.html for unknown non-asset routes.
+    // SPA fallback to index.html for unknown non-asset routes.
     if (!path.extname(rel)) {
       try {
         const html = await readFile(path.join(PUBLIC_DIR, 'index.html'));
@@ -109,8 +101,7 @@ const server = http.createServer((req, res) => {
   else serveStatic(req, res, pathname);
 });
 
-// If the port is taken, walk up to the next free one instead of crashing with
-// an EADDRINUSE stack trace.
+// If the port is taken, walk up to the next free one instead of crashing.
 let port = START_PORT;
 let attempts = 0;
 

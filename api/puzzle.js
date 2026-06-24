@@ -17,7 +17,7 @@ export default function handler(req, res) {
       maxGuesses: MAX_GUESSES,
       totalCountries: COUNTRIES.length,
     },
-    // Clients may briefly cache; the answer is not here so this is safe.
+    // Safe to cache: the answer is not in this response.
     { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' },
   );
 }

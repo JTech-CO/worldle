@@ -1,13 +1,7 @@
-// Deterministic daily puzzle selection.
-//
-// The answer for a given day is computed from the date alone — no database, no
-// per-request randomness — so every player worldwide gets the same country and
-// a Vercel function (which is stateless) always returns a consistent result.
-//
-// Rollover is at KST midnight: worldle.kr's audience is primarily Korean and
-// KST has no DST, so a KST-midnight instant expressed in UTC stays exactly 24h
-// apart forever. EPOCH_MS is the UTC instant of launch day 2026-06-23 00:00 KST,
-// so that day is puzzle #1 and each following day increments by one.
+// Deterministic daily puzzle selection: the answer comes from the date alone, so
+// every player gets the same country and the stateless Vercel function stays
+// consistent. Rollover at KST midnight (KST has no DST, so the UTC instant stays
+// exactly 24h apart forever); EPOCH_MS is launch day 2026-06-23 00:00 KST = #1.
 
 import { COUNTRIES } from './countries.js';
 
@@ -15,10 +9,9 @@ const DAY_MS = 86_400_000;
 const TZ_OFFSET_MIN = 540; // KST = UTC+9, no daylight saving
 const EPOCH_MS = Date.UTC(2026, 5, 22, 15, 0, 0); // 2026-06-23 00:00:00 KST (launch day = #1)
 
-// The shuffle seed is the one real secret: with it (plus the public country list
-// and algorithm) anyone could compute every day's answer. In production set
-// WORLDLE_SEED (any integer) as an env var so the order can't be reproduced from
-// the public source. The fallback is local-dev only and yields a DIFFERENT order.
+// The shuffle seed is the one real secret: with it anyone could compute every
+// day's answer. Set WORLDLE_SEED in production; the fallback is dev-only and
+// yields a DIFFERENT order.
 const SHUFFLE_SEED = (Number(process.env.WORLDLE_SEED) || 0x9e3779b1) >>> 0;
 
 /** Puzzle number for an instant. Puzzle #1 is the KST day of 2026-06-23. */

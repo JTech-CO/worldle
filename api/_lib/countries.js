@@ -1,16 +1,6 @@
-// Master country dataset — the single source of truth.
-//
-// Lives under /api so coordinates are NEVER shipped to the browser. The client
-// only ever receives { id, ko, en, aliases } via /api/countries; all distance
-// and bearing math runs server-side in /api/guess so the daily answer cannot be
-// read from page source. This is the core anti-cheat boundary.
-//
-// Fields:
-//   id      ISO 3166-1 alpha-2 code (stable identifier used across the API)
-//   ko      Korean display name
-//   en      English display name
-//   lat,lon Representative point (degrees). Standard visual centroids.
-//   aliases Optional extra search terms (lowercased match only; not displayed)
+// Master country dataset. Lives under /api so coordinates are NEVER shipped to
+// the browser — the anti-cheat boundary: clients get names only, all distance/
+// bearing math runs server-side.
 
 /** @typedef {{ id: string, ko: string, en: string, lat: number, lon: number, aliases?: string[] }} Country */
 

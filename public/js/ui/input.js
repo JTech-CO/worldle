@@ -1,25 +1,21 @@
-// Accessible autocomplete combobox over the country list. Filters by Korean
-// name, English name and aliases; supports keyboard navigation and selection.
+// Accessible autocomplete combobox over the country list.
 import { getLang, countryName } from '../i18n.js';
 
 const MAX_SUGGESTIONS = 8;
 
 const norm = (s) => s.toLowerCase().replace(/\s+/g, ' ').trim();
-const squash = (s) => norm(s).replace(/\s+/g, ''); // space-insensitive form
+const squash = (s) => norm(s).replace(/\s+/g, ''); // space-insensitive
 
 function searchTerms(c) {
   return [c.ko, c.en, ...(c.aliases || [])];
 }
 
-/**
- * @param {{ input: HTMLInputElement, list: HTMLElement }} els
- */
 export function createCombobox({ input, list }) {
   let countries = [];
   let filtered = [];
   let activeIndex = -1;
   let pickHandler = () => {};
-  let composing = false; // true while a CJK/IME character is being composed
+  let composing = false; // true while an IME character is being composed
   let blurTimer = 0;
 
   function close() {
@@ -61,7 +57,7 @@ export function createCombobox({ input, list }) {
 
       li.append(primary, sub);
       li.addEventListener('mousedown', (e) => {
-        e.preventDefault(); // keep focus on the input
+        e.preventDefault(); // keep focus on input
         pick(c);
       });
       list.appendChild(li);
@@ -89,7 +85,7 @@ export function createCombobox({ input, list }) {
     pickHandler(country);
   }
 
-  /** Resolve current text to a country: exact name match, else sole/top match. */
+  /** Resolve current text to a country: exact match, else top match. */
   function resolveInput() {
     const q = norm(input.value);
     if (!q) return null;
@@ -105,16 +101,16 @@ export function createCombobox({ input, list }) {
     clearTimeout(blurTimer);
     filtered = rankMatches(input.value);
     activeIndex = -1;
-    input.removeAttribute('aria-activedescendant'); // list was rebuilt; old id is gone
+    input.removeAttribute('aria-activedescendant'); // list rebuilt; old id is gone
     renderList();
   });
 
-  // Track IME composition so a Hangul-commit Enter is never read as submit/select.
+  // Track IME composition so a Hangul-commit Enter isn't read as submit/select.
   input.addEventListener('compositionstart', () => { composing = true; });
   input.addEventListener('compositionend', () => { setTimeout(() => { composing = false; }, 0); });
 
   input.addEventListener('keydown', (e) => {
-    if (e.isComposing || e.keyCode === 229) return; // mid-composition key (e.g. Hangul)
+    if (e.isComposing || e.keyCode === 229) return; // mid-composition key (Hangul)
     if (list.hidden && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
       filtered = rankMatches(input.value);
       if (filtered.length) renderList();
@@ -132,7 +128,7 @@ export function createCombobox({ input, list }) {
         break;
       case 'Enter':
         if (activeIndex >= 0 && filtered[activeIndex]) {
-          e.preventDefault(); // pick the highlighted item instead of submitting raw text
+          e.preventDefault(); // pick highlighted item, not raw text
           pick(filtered[activeIndex]);
         }
         break;
@@ -144,8 +140,7 @@ export function createCombobox({ input, list }) {
     }
   });
 
-  // Close when focus leaves the combo. The timer lets a suggestion mousedown win
-  // the race; cancel it if focus returns so a quick re-focus keeps the list open.
+  // Delay close so a suggestion mousedown wins the race; cancel on re-focus.
   input.addEventListener('blur', () => { blurTimer = setTimeout(close, 120); });
   input.addEventListener('focus', () => clearTimeout(blurTimer));
 

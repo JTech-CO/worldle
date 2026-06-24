@@ -1,8 +1,5 @@
-// A deliberately coarse land/ocean mask for tinting the low-poly globe. It is an
-// APPROXIMATION made of lat/lon boxes — enough to read as continents on a small
-// rotating sphere, but far too rough to identify any country (the globe stays a
-// non-hint). Orientation is arbitrary since the globe is purely decorative.
-
+// Deliberately coarse land/ocean mask of lat/lon boxes — too rough to identify
+// any country, so the globe stays a non-hint.
 // Each region: [latMin, latMax, lonMin, lonMax] in degrees, lon in [-180, 180].
 const LAND = [
   // North America
@@ -25,7 +22,7 @@ const LAND = [
   [-90, -64, -180, 180],
 ];
 
-/** Rough land test. true = land, false = ocean. */
+/** Rough land test. true = land. */
 export function isLand(lat, lon) {
   for (let i = 0; i < LAND.length; i++) {
     const [a, b, c, d] = LAND[i];

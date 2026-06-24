@@ -1,12 +1,10 @@
-// Build a spoiler-free, Wordle-style share grid and copy it. Emoji here are the
-// genre convention for a shareable result (not decorative UI), so they stay.
+// Spoiler-free Wordle-style share grid. Emoji are genre convention, not UI, so they stay.
 import { t } from '../i18n.js';
 
 const ARROW_EMOJI = {
   N: '⬆️', NE: '↗️', E: '➡️', SE: '↘️', S: '⬇️', SW: '↙️', W: '⬅️', NW: '↖️',
 };
 
-// 5-cell proximity bar per guess, filled from proximity %.
 function proximityCells(pct) {
   const filled = Math.round(pct / 20);
   return '🟩'.repeat(filled) + '⬜'.repeat(5 - filled);
@@ -17,7 +15,6 @@ function guessLine(result) {
   return proximityCells(result.proximityPct) + (ARROW_EMOJI[result.compass] || '');
 }
 
-/** The shareable text block. */
 export function buildShareText(store) {
   const solved = store.status === 'won';
   const score = solved ? `${store.guesses.length}/${store.maxGuesses}` : `X/${store.maxGuesses}`;
@@ -26,10 +23,7 @@ export function buildShareText(store) {
   return [t('shareHeader', store.day, score), ...lines, url].join('\n');
 }
 
-/**
- * Share the result. Prefers the native share sheet, falls back to clipboard.
- * @returns {Promise<'shared'|'copied'|'failed'>}
- */
+// Prefers the native share sheet, falls back to clipboard.
 export async function shareResult(store) {
   const text = buildShareText(store);
   try {
@@ -38,7 +32,7 @@ export async function shareResult(store) {
       return 'shared';
     }
   } catch {
-    // user cancelled or share unavailable — fall through to copy
+    // cancelled or unavailable — fall through to copy
   }
   try {
     await navigator.clipboard.writeText(text);

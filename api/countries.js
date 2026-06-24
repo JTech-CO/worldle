@@ -9,7 +9,7 @@ export default function handler(req, res) {
     res,
     200,
     { countries: publicList() },
-    // Pure reference data; cache hard. A new deploy busts it via the URL/build.
+    // Reference data; cache hard.
     { 'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400' },
   );
 }

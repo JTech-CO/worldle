@@ -1,14 +1,10 @@
-// Great-circle geometry on a spherical Earth.
-//
-// The original game computed direction with a flat atan2(dLat, dLon) and never
-// normalized longitude, so guesses across the antimeridian (e.g. Japan -> USA)
-// could point the wrong way and distances were never shown. Everything here is
-// proper spherical math instead.
+// Great-circle geometry on a spherical Earth. Proper spherical math so guesses
+// across the antimeridian (e.g. Japan -> USA) point the right way.
 
 const R_KM = 6371.0088; // mean Earth radius (IUGG)
 
-// Half the Earth's circumference along a great circle: the maximum possible
-// distance between two points. Used to turn distance into a proximity score.
+// Max possible great-circle distance (half Earth's circumference); used to turn
+// distance into a proximity score.
 export const MAX_DISTANCE_KM = Math.PI * R_KM; // ~20015 km
 
 const toRad = (deg) => (deg * Math.PI) / 180;
@@ -29,9 +25,8 @@ export function distanceKm(lat1, lon1, lat2, lon2) {
 }
 
 /**
- * Initial bearing (forward azimuth) from point 1 to point 2, in degrees
- * clockwise from true north [0, 360). Handles the antimeridian correctly
- * because it works in trig space rather than on raw longitude deltas.
+ * Initial bearing from point 1 to point 2, degrees clockwise from north [0,360).
+ * Works in trig space so the antimeridian is handled correctly.
  */
 export function bearingDeg(lat1, lon1, lat2, lon2) {
   const phi1 = toRad(lat1);
@@ -59,20 +54,13 @@ export function arrowForCompass(compass) {
   return ARROWS[compass];
 }
 
-/**
- * Proximity as an integer percentage [0, 100], where 100 means an exact match
- * and the score falls off linearly with great-circle distance. Mirrors the
- * feedback model players know from Worldle/Globle.
- */
+/** Proximity as an integer percentage [0,100]; 100 = exact, falls off linearly with distance. */
 export function proximityPct(distance) {
   const pct = Math.round((1 - distance / MAX_DISTANCE_KM) * 100);
   return Math.max(0, Math.min(100, pct));
 }
 
-/**
- * Round a distance to a deliberately coarse value so the hint stays approximate
- * (and the exact figure never leaves the server). e.g. 3327 -> 3000, 234 -> 200.
- */
+/** Coarsen a distance so the hint stays approximate and the exact figure never leaves the server. */
 export function coarseDistance(d) {
   if (d >= 1000) return Math.round(d / 1000) * 1000;
   if (d >= 100) return Math.round(d / 100) * 100;
@@ -80,8 +68,7 @@ export function coarseDistance(d) {
 }
 
 /**
- * Full comparison of a guess against the answer. Proximity uses the exact
- * distance; the reported distanceKm is coarsened so the hint is approximate.
+ * Compare a guess against the answer. Proximity uses exact distance; reported distanceKm is coarsened.
  * @returns {{ distanceKm:number, bearingDeg:number, compass:string, arrow:string, proximityPct:number, correct:boolean }}
  */
 export function compare(guess, answer) {
