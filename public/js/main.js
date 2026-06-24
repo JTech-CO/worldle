@@ -43,7 +43,7 @@ function renderMeta() {
 
 function renderStatus() {
   if (store.status === 'won') {
-    setMessage(t('win', answerName(), store.guesses.length), 'win');
+    setMessage(t('winShort', answerName()), 'win');
   } else if (store.status === 'lost') {
     setMessage(t('lose', answerName()), 'error');
   } else {
@@ -59,7 +59,7 @@ function renderEndgame() {
   dom.endgame.hidden = false;
   dom.endgameTitle.textContent =
     store.status === 'won'
-      ? t('win', answerName(), store.guesses.length)
+      ? `${t('winShort', answerName())}\n${t('winTries', store.guesses.length)}`
       : t('lose', answerName());
   combo.setDisabled(true);
   dom.submit.disabled = true;
