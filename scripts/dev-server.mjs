@@ -12,7 +12,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const PUBLIC_DIR = path.join(ROOT, 'public');
+// Defaults to the readable source; pass "dist" to serve the built (obfuscated) site.
+const SERVE_DIR = process.argv[2] || 'public';
+const PUBLIC_DIR = path.join(ROOT, SERVE_DIR);
 const API_DIR = path.join(ROOT, 'api');
 const START_PORT = Number(process.env.PORT) || 3000;
 const MAX_PORT_TRIES = 10;

@@ -1,6 +1,9 @@
 # Dependencies (none required, but just in case)
 node_modules/
 
+# Build output (the obfuscated site is generated at deploy time)
+dist/
+
 # Vercel
 .vercel/
 

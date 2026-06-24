@@ -7,6 +7,13 @@
       "runtimeArgs": ["scripts/dev-server.mjs"],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "worldle-dist",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["scripts/dev-server.mjs", "dist"],
+      "port": 3100,
+      "autoPort": true
     }
   ]
 }
